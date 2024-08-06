@@ -71,4 +71,13 @@ def getDiagram(poset, relations, filename):
 
     fig.set_facecolor('#181c25')
     plt.axis('off')
-    fig.savefig(filename)
+
+    buf = io.BytesIO()
+
+    plt.savefig(buf, format=format)
+    plt.close()  # Close the plot to avoid memory leaks
+
+    # Move to the beginning of the BytesIO object
+    buf.seek(0)
+
+    return buf
