@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 matplotlib==3.9.1
 python_fasthtml==0.2.1
+=======
+matplotlib==3.9.1
+python_fasthtml==0.2.1
+>>>>>>> 4e78984c627e4151d71b3135211d80109f6dda1e
