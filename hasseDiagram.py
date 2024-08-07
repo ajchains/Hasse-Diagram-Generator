@@ -1,6 +1,75 @@
 import matplotlib.pyplot as plt
 
 
+def find_sup(subset, relations):
+    # upper bound
+    temp = []
+    ub = []
+    sup = False
+    for i in subset:
+        rel = []
+        for j in relations:
+            if j[0] == i:
+                rel.append(j[1])
+        if len(rel) == 0:
+            temp.append(i)
+        else:
+            temp.extend(rel)
+
+    for i in range(len(temp)):
+        count = 0
+        for j in range(len(temp)):
+            if temp[i] == temp[j]:
+                count += 1
+        if count == len(subset):
+            if temp[i] not in ub:
+                ub.append(temp[i])
+
+    for i in ub:
+        count = 0
+        for j in ub:
+            if i < j:
+                count += 1
+        if count == (len(ub)-1):
+            sup = i
+    return sup
+
+
+def find_inf(subset, relations):
+    # Lower Bound
+    lb = []
+    temp = []
+    inf = False
+
+    for i in subset:
+        rel = []
+        for j in relations:
+            if j[1] == i:
+                rel.append(j[0])
+        if len(rel) == 0:
+            temp.append(i)
+        else:
+            temp.extend(rel)
+
+    for i in range(len(temp)):
+        count = 0
+        for j in range(len(temp)):
+            if temp[i] == temp[j]:
+                count += 1
+        if count == len(subset):
+            if temp[i] not in lb:
+                lb.append(temp[i])
+
+    for i in lb:
+        count = 0
+        for j in lb:
+            if i > j:
+                count += 1
+        if count == (len(lb)-1):
+            inf = i
+    return inf
+
+
 def getDiagram(poset, relations, filename):
     try:
         floors = []
@@ -73,6 +142,29 @@ def getDiagram(poset, relations, filename):
         fig.set_facecolor('#181c25')
         plt.axis('off')
         fig.savefig(filename)
+
+        # Lattice Checker
+        problem = []
+        for i in poset:
+            lattice = True
+            for j in poset:
+                subset = [i, j]
+                if find_inf(subset, relations) and find_sup(subset, relations):
+                    continue
+                else:
+                    problem = [
+                        [i, j], [find_inf(subset, relations), find_sup(subset, relations)]]
+                    lattice = False
+            if lattice == True:
+                continue
+            else:
+                print("not a lattice", problem)
+                break
+        if lattice == True:
+            print("It is a Lattice")
+
+        return lattice
+
     except Exception as e:
         print(f"An error occured{e}")
         print("error")

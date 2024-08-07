@@ -64,12 +64,18 @@ def post(rid: str):
         print(e)
         get()
         return "error2"
-    if getDiagram(poset, relations, filename) == 'Error':
+    hasse = getDiagram(poset, relations, filename)
+    if hasse == 'Error':
         print("error")
         get()
         return "error3"
-    response = Img(src=filename)
-    return response
+    else:
+        if hasse:
+            response = Img(src=filename), H2("It is a Lattice")
+            return response
+        else:
+            response = Img(src=filename), H2("It is not a Lattice")
+            return response
 
 
 serve()
