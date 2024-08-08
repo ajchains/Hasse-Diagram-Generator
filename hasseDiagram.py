@@ -155,7 +155,7 @@ def getDiagram(poset, relations, filename):
                     continue
                 else:
                     problem = [
-                        [i, j], [find_inf(subset, relations), find_sup(subset, relations, floors)]]
+                        [i, j], [find_inf(subset, relations, floors), find_sup(subset, relations, floors)]]
                     lattice = False
             if lattice == True:
                 continue
