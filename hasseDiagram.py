@@ -1,69 +1,71 @@
 import matplotlib.pyplot as plt
 
 
-def find_sup(subset, relations):
+def find_floor(element, floors):
+    return [floors.index(floor) for floor in floors if element in floor][0]
+
+
+def find_sup(subset, relations, floors):
     # upper bound
     temp = []
     ub = []
     sup = False
     for i in subset:
         rel = []
-        for j in relations:
-            if j[0] == i:
-                rel.append(j[1])
-        if len(rel) == 0:
-            temp.append(i)
-        else:
-            temp.extend(rel)
+        rel.append(i)
+        for j in rel:
+            for k in relations:
+                if k[0] == j:
+                    rel.append(k[1])
+        temp.extend(rel)
 
     for i in range(len(temp)):
         count = 0
         for j in range(len(temp)):
             if temp[i] == temp[j]:
                 count += 1
-        if count == len(subset):
+        if count >= len(subset):
             if temp[i] not in ub:
                 ub.append(temp[i])
 
     for i in ub:
         count = 0
+        floorI = find_floor(i, floors)
         for j in ub:
-            if i < j:
+            if floorI < find_floor(j, floors):
                 count += 1
         if count == (len(ub)-1):
             sup = i
     return sup
 
 
-def find_inf(subset, relations):
-    # Lower Bound
+def find_inf(subset, relations, floors):
     lb = []
     temp = []
     inf = False
 
     for i in subset:
         rel = []
-        for j in relations:
-            if j[1] == i:
-                rel.append(j[0])
-        if len(rel) == 0:
-            temp.append(i)
-        else:
-            temp.extend(rel)
+        rel.append(i)
+        for j in rel:
+            for k in relations:
+                if k[1] == j:
+                    if k[0] not in rel:
+                        rel.append(k[0])
 
+        temp.extend(rel)
     for i in range(len(temp)):
         count = 0
         for j in range(len(temp)):
             if temp[i] == temp[j]:
                 count += 1
-        if count == len(subset):
+        if count >= len(subset):
             if temp[i] not in lb:
                 lb.append(temp[i])
-
     for i in lb:
         count = 0
         for j in lb:
-            if i > j:
+            if find_floor(i, floors) > find_floor(j, floors):
                 count += 1
         if count == (len(lb)-1):
             inf = i
@@ -149,11 +151,11 @@ def getDiagram(poset, relations, filename):
             lattice = True
             for j in poset:
                 subset = [i, j]
-                if find_inf(subset, relations) and find_sup(subset, relations):
+                if find_inf(subset, relations, floors) and find_sup(subset, relations, floors):
                     continue
                 else:
                     problem = [
-                        [i, j], [find_inf(subset, relations), find_sup(subset, relations)]]
+                        [i, j], [find_inf(subset, relations), find_sup(subset, relations, floors)]]
                     lattice = False
             if lattice == True:
                 continue
