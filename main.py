@@ -53,9 +53,11 @@ def post(rid: str):
         rels = []
         print(rid)
         for i in rid:
-            rels = [x.split(',') for x in rid if x]
+            rels = [x.split(',') if x else []for x in rid]
         print("rels", rels)
         for i in range(len(rels)):
+            if len(rels[i]) == 0:
+                continue
             for j in range(len(rels[i])):
                 relations.append([poset[i], rels[i][j]])
         print(poset)
